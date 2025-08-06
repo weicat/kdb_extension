@@ -37,21 +37,21 @@ int KDBFileReader::read_meta(size_t base_offset) {
 
     // fseek(fp_, base_offset, SEEK_SET);    
     this->istream_->fseek1(base_offset, SEEK_SET);
-    // fread(this->header, 1, HEADER_BYTES, fp_);
-    this->istream_->fread1(this->header,1, HEADER_BYTES);
-    //readlist<char>(fp_, 0, HEADER_BYTES, header);
+    // fread(this->header, 1, KDB_HEADER_BYTES, fp_);
+    this->istream_->fread1(this->header,1, KDB_HEADER_BYTES);
+    //readlist<char>(fp_, 0, KDB_HEADER_BYTES, header);
     //std::cout<<"info,header:"<<strncmp(header,"\xfe\x20")<<","<<strncmp(header,"\xff\01")<<","<<strncmp(header,"\xFD\00")<<std::endl;   //7       
     //std::cout<<"info,header:"<<(std::string(header.data(),2)==std::string("\xfe\x20",2))<<","<<(std::string(header.data(),2)==std::string("\xff\01",2))<<std::endl;   //7   
 
     char datatype;        
     //size_t read = fread(&datatype, DTYPE_BYTES, 1, fp_);
     size_t read = this->istream_->fread1(&datatype, DTYPE_BYTES, 1);
-    //char datatype = readatom<char>(fp_, HEADER_BYTES, DTYPE_BYTES);
+    //char datatype = readatom<char>(fp_, KDB_HEADER_BYTES, DTYPE_BYTES);
     //std::cout<<"info,datatype:"<<(int)datatype<<std::endl;   //7
     this->dtype_ = (int)datatype;
 
     std::cout << "debug,position1:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
-    if(strncmp(header,"kx",HEADER_BYTES)==0) {  //.data()
+    if(strncmp(header,"kx",KDB_HEADER_BYTES)==0) {  //.data()
         //std::cout<<"error,unsupported kx"<<std::endl;  
         size_t MAGIC_BYTES = 8;
         std::vector<char> header(MAGIC_BYTES, '\0');
@@ -85,7 +85,7 @@ int KDBFileReader::read_meta(size_t base_offset) {
     }
     if((int)datatype<20) {
         std::cout << "debug,position2:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
-        if(strncmp(header,"\xfe\x20",HEADER_BYTES)==0) {   //list
+        if(strncmp(header,"\xfe\x20",KDB_HEADER_BYTES)==0) {   //list
 #if DEBUG_MODE         
             std::cout<<"info,header:FE20,dtype:"<<(int)datatype<<std::endl;
 #endif            
@@ -94,7 +94,7 @@ int KDBFileReader::read_meta(size_t base_offset) {
             //read0<T>((int)datatype, fp_, offset, byte_size, item_start, item_read, out);
             return 0;
         }
-        else if(strncmp(header,"\xff\01",HEADER_BYTES)==0) {  //atoms
+        else if(strncmp(header,"\xff\01",KDB_HEADER_BYTES)==0) {  //atoms
 #if DEBUG_MODE         
             std::cout<<"info,header:FF01,dtype:"<<(int)datatype<<std::endl;
 #endif            
@@ -105,7 +105,7 @@ int KDBFileReader::read_meta(size_t base_offset) {
         }
     }
     std::cout << "debug,position3:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
-    if((strncmp(header,"\xFD\00",HEADER_BYTES)==0)&&((int)datatype==4)) {
+    if((strncmp(header,"\xFD\00",KDB_HEADER_BYTES)==0)&&((int)datatype==4)) {
 #if DEBUG_MODE     
         std::cout<<"info,header:FD00,dtype:"<<(int)datatype<<std::endl;
 #endif                
@@ -115,7 +115,7 @@ int KDBFileReader::read_meta(size_t base_offset) {
 
     }
     std::cout << "debug,position4:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
-    if((strncmp(header,"\xFD\00",HEADER_BYTES)==0)&&((int)datatype>=20)&&((int)datatype<=76)) {   //enum
+    if((strncmp(header,"\xFD\00",KDB_HEADER_BYTES)==0)&&((int)datatype>=20)&&((int)datatype<=76)) {   //enum
 #if DEBUG_MODE     
         std::cout<<"info,header:FD00,dtype:"<<(int)datatype<<",";
         std::cout<<"This is an extension header following kdb::Parser::ExtListHeader."<<std::endl;
@@ -141,7 +141,7 @@ int KDBFileReader::read_meta(size_t base_offset) {
 
     }
     std::cout << "debug,position5:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
-    if((strncmp(header,"\xFD\01",HEADER_BYTES)==0)&&((int)datatype==77)) {   //anymap
+    if((strncmp(header,"\xFD\01",KDB_HEADER_BYTES)==0)&&((int)datatype==77)) {   //anymap
 #if DEBUG_MODE  
         std::cout<<"info,header:FD01,dtype:"<<(int)datatype<<",basestrfile:anymap"<<std::endl;
 #endif
@@ -192,9 +192,9 @@ int KDBFileReader::read_meta(size_t base_offset) {
 //     return data
 
     std::cout << "debug,position6:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
-    std::cout<<"debug,HEADER_BYTES:"<<HEADER_BYTES<<std::endl;
-    std::cout<<"debug,strncmp:"<<std::dec<<strncmp(header,"\xfd\x20",HEADER_BYTES)<<std::endl;
-    if(strncmp(header,"\xfd\x20",HEADER_BYTES)==0) {   //可能是enum类型，也有可能是nested类型
+    std::cout<<"debug,KDB_HEADER_BYTES:"<<KDB_HEADER_BYTES<<std::endl;
+    std::cout<<"debug,strncmp:"<<std::dec<<strncmp(header,"\xfd\x20",KDB_HEADER_BYTES)<<std::endl;
+    if(strncmp(header,"\xfd\x20",KDB_HEADER_BYTES)==0) {   //可能是enum类型，也有可能是nested类型
 #if DEBUG_MODE         
         std::cout<<"info,header:FD20,dtype:"<<(int)datatype<<",ExtListHeader"<<std::endl;
 #endif        
