@@ -15,7 +15,7 @@
 
 #define DTYPE_BYTES 1
 
-int HEADER_BYTES = 2;
+#define KDB_HEADER_BYTES  2
 
 class KDBFileReader {
 private:
@@ -30,7 +30,7 @@ public:
 
 private:
 //public:
-    char header[HEADER_BYTES];
+    char header[KDB_HEADER_BYTES];
     int dtype_;    
     size_t offset_;
     size_t file_byte_size_;
@@ -71,13 +71,13 @@ size_t KDBFileReader::read(size_t item_start, size_t item_read, std::vector<T>& 
 
     out.clear();
     if(this->dtype_<20) {
-        if(strncmp(this->header,"\xfe\x20",HEADER_BYTES)==0) {   //list
+        if(strncmp(this->header,"\xfe\x20",KDB_HEADER_BYTES)==0) {   //list
             read0<T>(this->dtype_, this->istream_, this->offset_, this->file_byte_size_, item_start, item_read, out); 
         }
-        else if(strncmp(this->header,"\xff\01",HEADER_BYTES)==0) {  //atoms
+        else if(strncmp(this->header,"\xff\01",KDB_HEADER_BYTES)==0) {  //atoms
             read0<T>(this->dtype_, this->istream_, this->offset_, this->file_byte_size_, 0, 0, out);
         }
-        else if(strncmp(this->header,"\xfd\x00",HEADER_BYTES)==0) {   //#file
+        else if(strncmp(this->header,"\xfd\x00",KDB_HEADER_BYTES)==0) {   //#file
 #if DEBUG_MODE         
             std::cout<<"info,read header:FD00"<<std::endl;
 #endif
@@ -87,7 +87,7 @@ size_t KDBFileReader::read(size_t item_start, size_t item_read, std::vector<T>& 
             std::cout<<"error,read failed. unknown header type"<<std::endl;
         }
     } 
-    else if((strncmp(this->header,"\xFD\01",HEADER_BYTES)==0) && (this->dtype_==77)) {
+    else if((strncmp(this->header,"\xFD\01",KDB_HEADER_BYTES)==0) && (this->dtype_==77)) {
 #if DEBUG_MODE  
         std::cout<<"info,read FD01,dtype:77"<<std::endl;
 #endif
@@ -113,17 +113,17 @@ inline size_t KDBFileReader::read(size_t item_start, size_t item_read, std::vect
 
     out.clear();
     if(this->dtype_<20) {
-        if(strncmp(this->header,"\xfe\x20",HEADER_BYTES)==0) {   //list
+        if(strncmp(this->header,"\xfe\x20",KDB_HEADER_BYTES)==0) {   //list
             //std::cout<<"debug,read0 list"<<std::endl;
             read0<std::string>(this->dtype_, this->istream_, this->offset_, this->file_byte_size_, item_start, item_read, out);
         }
-        else if(strncmp(this->header,"\xff\01",HEADER_BYTES)==0) {  //atoms
+        else if(strncmp(this->header,"\xff\01",KDB_HEADER_BYTES)==0) {  //atoms
             //std::cout<<"debug,read0 atoms"<<std::endl;
             //读sym文件时，会进入atoms模式，虽然dtype==11。调用特化read0<std::string>
             read0<std::string>(this->dtype_, this->istream_, this->offset_, this->file_byte_size_, item_start, item_read, out);            
         }
     }
-    else if((strncmp(header,"\xFD\00",HEADER_BYTES)==0)&&(this->dtype_>=20)&&(this->dtype_<=77)) {   //enum  
+    else if((strncmp(header,"\xFD\00",KDB_HEADER_BYTES)==0)&&(this->dtype_>=20)&&(this->dtype_<=77)) {   //enum  
         //std::cout<<"debug,read enum"<<std::endl;
         std::vector<long> idx;         
         readlist1<long>(this->istream_, this->offset_, this->file_byte_size_, item_start, item_read, idx);
@@ -131,7 +131,7 @@ inline size_t KDBFileReader::read(size_t item_start, size_t item_read, std::vect
         for(long i=0;i<idx.size();i++)
             out.push_back(this->sym_vec_[idx[i]]);
     }
-    else if((strncmp(this->header,"\xFD\01",HEADER_BYTES)==0) && (this->dtype_==77)) {
+    else if((strncmp(this->header,"\xFD\01",KDB_HEADER_BYTES)==0) && (this->dtype_==77)) {
 #if DEBUG_MODE    
         std::cout<<"info,read FD01,dtype:77"<<std::endl;
 #endif
