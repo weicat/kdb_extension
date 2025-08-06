@@ -193,8 +193,9 @@ int KDBFileReader::read_meta(size_t base_offset) {
 
     std::cout << "debug,position6:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
     std::cout<<"debug,KDB_HEADER_BYTES:"<<KDB_HEADER_BYTES<<std::endl;
-    std::cout<<"debug,strncmp:"<<std::dec<<strncmp(header,"\xfd\x20",KDB_HEADER_BYTES)<<std::endl;
-    if(strncmp(header,"\xfd\x20",KDB_HEADER_BYTES)==0) {   //可能是enum类型，也有可能是nested类型
+    int res = strncmp(header,"\xfd\x20",KDB_HEADER_BYTES);
+    std::cout<<"debug strncmp: "<<res<<", isEqual: "<< (res == 0) <<std::endl;
+    if(res==0) {   //可能是enum类型，也有可能是nested类型
 #if DEBUG_MODE         
         std::cout<<"info,header:FD20,dtype:"<<(int)datatype<<",ExtListHeader"<<std::endl;
 #endif        
