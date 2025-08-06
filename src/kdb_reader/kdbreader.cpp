@@ -195,10 +195,11 @@ int KDBFileReader::read_meta(size_t base_offset) {
     std::cout<<"debug,KDB_HEADER_BYTES:"<<KDB_HEADER_BYTES<<std::endl;
     int res = strncmp(header,"\xfd\x20",KDB_HEADER_BYTES);
     std::cout<<"debug strncmp: "<<std::dec << res<<", isEqual: "<< (res == 0) <<std::endl;
-    if(res==0 && datatype<1000) {   //可能是enum类型，也有可能是nested类型
+
+    std::cout << "res 的地址: " << &res << ", res 的值: " << res << ", res 的十六进制值: " << std::hex << res << std::endl;
+    if(res==0) {   //可能是enum类型，也有可能是nested类型
+        std::cout << "进入了 if (res == 0) 分支" << std::endl;
         std::cout<<"infonew,header:FD20,dtype:"<<(int)datatype<<",ExtListHeader"<<std::endl;
-        // ExtListHeader(16)
-        // char enum_name[4096 - (16 + 16)];  //就是一个字符串"sym"
         return this->read_meta(0x1000-16);
     }
         
