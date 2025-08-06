@@ -15,7 +15,8 @@
 
 #define DTYPE_BYTES 1
 
-#define KDB_HEADER_BYTES  2
+//#define KDB_HEADER_BYTES  2
+const int KDB_HEADER_BYTES = 2;
 
 class KDBFileReader {
 private:
