@@ -7,11 +7,6 @@
 #define DEBUG_MODE 1
 
 
-// KDBFileReader::KDBFileReader(const std::string &path, const std::string& sympath)
-// {
-
-// }
-
 KDBFileReader::KDBFileReader(const std::string &path, const std::string& sympath) 
 : path_(path), sympath_(sympath),readed_size_(0),total_size_(0),finished_(false)//, nested_(nullptr)
 {
@@ -47,7 +42,7 @@ int KDBFileReader::read_meta(size_t base_offset) {
     //size_t read = fread(&datatype, DTYPE_BYTES, 1, fp_);
     size_t read = this->istream_->fread1(&datatype, DTYPE_BYTES, 1);
     //char datatype = readatom<char>(fp_, KDB_HEADER_BYTES, DTYPE_BYTES);
-    //std::cout<<"info,datatype:"<<(int)datatype<<std::endl;   //7
+    std::cout<<"info, datatype0:"<<(int)datatype<<std::endl;   //7
     this->dtype_ = (int)datatype;
 
     std::cout << "debug,position1:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
@@ -188,16 +183,15 @@ int KDBFileReader::read_meta(size_t base_offset) {
         std::cout<<"error,not implemented"<<std::endl;
         assert(0);
     }
-//   if filename.endswith("#"):                                 # hash == data file
-//     return data
 
     std::cout << "debug,position6:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
     std::cout<<"debug,KDB_HEADER_BYTES:"<<KDB_HEADER_BYTES<<std::endl;
     int res = strncmp(header,"\xfd\x20",KDB_HEADER_BYTES);
     int cres = (res == 0);
-    std::cout<<"debug strncmp: "<<std::dec << res<<", isEqual: "<< cres <<std::endl;
 
     std::cout << "res 的地址: " << &res << ", res 的值: " << res << ", res 的十六进制值: " << std::hex << res << std::endl;
+    std::cout<<"debug strncmp: "<<std::dec << res<<", isEqual: "<< cres <<std::endl;
+    std::cout << "datatype: "<<(int)datatype<<std::end;
     if(cres) {   
         std::cout << "进入了 if (res == 0) 分支" << std::endl;
         std::cout<<"infonew,header:FD20,dtype:"<<(int)datatype<<",ExtListHeader"<<std::endl;
