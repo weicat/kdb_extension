@@ -179,19 +179,18 @@ int KDBFileReader::read_meta(size_t base_offset) {
         }
 
     }    
-    if(((int)datatype>77)&&((int)datatype<97)) {
-        std::cout<<"error,not implemented"<<std::endl;
-        assert(0);
-    }
+    //if(((int)datatype>77)&&((int)datatype<97)) {
+    //    std::cout<<"error,not implemented"<<std::endl;
+    //    assert(0);
+    //}
 
     std::cout <<"debug position6:"<<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[0])) << " " <<std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(static_cast<unsigned char>(header[1]))<<std::endl;
     std::cout<<"debug KDB_HEADER_BYTES:"<<KDB_HEADER_BYTES<<std::endl;
     int res = strncmp(header,"\xfd\x20",KDB_HEADER_BYTES);
-    int cres = (res == 0);
-
     std::cout << "res 的地址: " << &res << ", res 的值: " << res << ", res 的十六进制值: " << std::hex << res << std::endl;
-    std::cout<<"debug strncmp: "<<std::dec << res<<", isEqual: "<< cres <<std::endl;
     std::cout<<"debug datatype: "<<(int)datatype<<std::endl;
+    bool cres = (res == 0);
+    std::cout<<"debug strncmp: "<<std::dec << res<<", isEqual: "<< cres <<std::endl;
     if(cres) {   
         std::cout << "进入了 if (res == 0) 分支" << std::endl;
         std::cout<<"infonew,header:FD20,dtype:"<<(int)datatype<<",ExtListHeader"<<std::endl;
