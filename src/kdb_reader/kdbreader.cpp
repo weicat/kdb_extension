@@ -191,7 +191,7 @@ int KDBFileReader::read_meta(size_t base_offset) {
 
     std::cout << "res 的地址: " << &res << ", res 的值: " << res << ", res 的十六进制值: " << std::hex << res << std::endl;
     std::cout<<"debug strncmp: "<<std::dec << res<<", isEqual: "<< cres <<std::endl;
-    std::cout << "datatype: "<<(int)datatype<<std::end;
+    std::cout << "datatype: "<<(int)datatype<<std::endl;
     if(cres) {   
         std::cout << "进入了 if (res == 0) 分支" << std::endl;
         std::cout<<"infonew,header:FD20,dtype:"<<(int)datatype<<",ExtListHeader"<<std::endl;
